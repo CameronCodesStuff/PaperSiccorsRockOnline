@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rock Paper Scissors Online</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; }
+        .choices { margin: 20px; }
+        button { font-size: 20px; margin: 5px; padding: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Rock Paper Scissors Online</h1>
+    <p id="status">Waiting for opponent...</p>
+    <div class="choices">
+        <button onclick="sendChoice('rock')">Rock</button>
+        <button onclick="sendChoice('paper')">Paper</button>
+        <button onclick="sendChoice('scissors')">Scissors</button>
+    </div>
+    <p id="result"></p>
+
+    <script>
+        const socket = new WebSocket('wss://your-websocket-server-url');
+
+        socket.onmessage = (event) => {
+            const data = JSON.parse(event.data);
+            if (data.message) {
+                document.getElementById('status').innerText = data.message;
+            }
+            if (data.result) {
+                document.getElementById('result').innerText = data.result;
+            }
+        };
+
+        function sendChoice(choice) {
+            socket.send(JSON.stringify({ choice }));
+        }
+    </script>
+</body>
+</html>
